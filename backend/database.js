@@ -1,5 +1,6 @@
 const Database = require("better-sqlite3");
 const db = new Database("ogec.db");
+db.pragma("foreign_keys = OFF");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS commissions (
@@ -13,7 +14,7 @@ db.exec(`
     nom TEXT NOT NULL,
     date TEXT,
     lieu TEXT,
-    participants TEXT DEFAULT '',
+    public TEXT DEFAULT '',
     FOREIGN KEY (commission_id) REFERENCES commissions(id)
   );
 
@@ -36,7 +37,7 @@ db.exec(`
     (6, 'Commission Vie Scolaire'),
     (7, 'Commission Vie Extérieure');
 
-  CREATE TABLE IF NOT EXISTS responsables (
+  CREATE TABLE IF NOT EXISTS administrateurs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom TEXT NOT NULL,
     prenom TEXT NOT NULL,
@@ -44,28 +45,36 @@ db.exec(`
     telephone TEXT,
     commission_id INTEGER,
     FOREIGN KEY (commission_id) REFERENCES commissions(id)
-);
-
+  );
 `);
 
-// Ajoute les colonnes si elles n'existent pas encore (migration)
+// Migrations
 try {
-  db.prepare(
-    "ALTER TABLE evenements ADD COLUMN participants TEXT DEFAULT ''",
-  ).run();
+  db.prepare("ALTER TABLE evenements ADD COLUMN public TEXT DEFAULT ''").run();
 } catch (e) {}
-
 try {
   db.prepare("ALTER TABLE taches ADD COLUMN terminee INTEGER DEFAULT 0").run();
 } catch (e) {}
-
 try {
-  db.prepare("ALTER TABLE evenements ADD COLUMN responsable_id INTEGER REFERENCES responsables(id)").run();
+  db.prepare(
+    "ALTER TABLE evenements ADD COLUMN responsable_id INTEGER REFERENCES administrateurs(id)",
+  ).run();
+} catch (e) {}
+try {
+  db.prepare(
+    "ALTER TABLE administrateurs ADD COLUMN commission_id INTEGER REFERENCES commissions(id)",
+  ).run();
+} catch (e) {}
+try {
+  db.prepare("ALTER TABLE evenements ADD COLUMN lien_drive TEXT").run();
+} catch (e) {}
+try {
+  db.prepare("ALTER TABLE taches ADD COLUMN lien_drive TEXT").run();
 } catch (e) {}
 
 // Nettoie les anciennes valeurs JSON en tableau vide
 db.prepare(
-  "UPDATE evenements SET participants = '' WHERE participants = '[]' OR participants IS NULL",
+  "UPDATE evenements SET public = '' WHERE public = '[]' OR public IS NULL",
 ).run();
 
 module.exports = db;

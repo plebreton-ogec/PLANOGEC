@@ -1,0 +1,188 @@
+.grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.carte {
+  background: #d9d9d9;
+  border-radius: 20px;
+  padding: 20px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.carte:hover {
+  background-color: #c8c8c8;
+}
+
+.carte-ajout {
+  font-size: 2rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formulaire {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 400px;
+  border: 1px solid #e0e0e0;
+}
+
+.formulaire h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.formulaire label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.formulaire input,
+.formulaire select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.formulaire input:focus,
+.formulaire select:focus {
+  outline: none;
+  border-color: #1e3a5f;
+  background: white;
+}
+
+.formulaire-boutons {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.formulaire-boutons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.formulaire-boutons button:first-child {
+  background-color: #1e3a5f;
+  color: white;
+}
+
+.formulaire-boutons button:first-child:hover {
+  background-color: #16305a;
+}
+
+.formulaire-boutons button:last-child {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.formulaire-boutons button:last-child:hover {
+  background-color: #e0e0e0;
+}
+
+.lien-archives {
+  margin-top: 24px;
+  cursor: pointer;
+  color: #555;
+  font-size: 0.95rem;
+  text-decoration: underline;
+}
+
+.lien-archives:hover {
+  color: #000;
+}
+
+.archives-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.archive-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.archive-item:hover {
+  background: #ebebeb;
+}
+
+.archive-nom {
+  font-weight: 500;
+}
+
+.archive-date {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.lien-drive {
+  color: #1d6f42;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.lien-drive:hover {
+  text-decoration: underline;
+}
+
+.lien-drive-mini {
+  color: #1d6f42;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.lien-drive-mini:hover {
+  text-decoration: underline;
+}

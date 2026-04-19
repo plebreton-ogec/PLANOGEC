@@ -1,6 +1,8 @@
 import { useState } from "react";
 import CommissionVieCollective from "./CommVieCollective";
-import "./App.css";
+import AdminPage from "./AdminPage";
+import Parametres from "./Parametres";
+import "./css/App.css";
 
 function App() {
   const [pageActive, setPageActive] = useState("accueil");
@@ -17,6 +19,8 @@ function App() {
 
   const getTitrePage = () => {
     if (pageActive === "accueil") return "Accueil";
+    if (pageActive === "administrateurs") return "Administrateurs de l'OGEC";
+    if (pageActive === "profil") return "Mon Profil";
     const commission = commissions.find((c) => c.id === pageActive);
     return commission ? commission.nom : "Page inconnue";
   };
@@ -25,6 +29,19 @@ function App() {
     if (pageActive === "vie-collective") {
       return (
         <CommissionVieCollective onRetour={() => setPageActive("accueil")} />
+      );
+    }
+
+    if (pageActive === "administrateurs") {
+      return <AdminPage onRetour={() => setPageActive("accueil")} />;
+    }
+
+    if (pageActive === "profil") {
+      return (
+        <div style={{ padding: 24 }}>
+          <h2>Mon Profil</h2>
+          <p>Fonctionnalité à venir.</p>
+        </div>
       );
     }
 
@@ -46,7 +63,6 @@ function App() {
 
   return (
     <div className="dashboard">
-      {/* Barre de navigation */}
       <nav className="navbar">
         <div className="navbar-left">
           <span
@@ -75,10 +91,11 @@ function App() {
           </span>
         </div>
 
-        <div className="navbar-right" />
+        <div className="navbar-right">
+          <Parametres onNavigate={setPageActive} />
+        </div>
       </nav>
 
-      {/* Contenu de la page */}
       <div className="page-content">{renderPage()}</div>
     </div>
   );

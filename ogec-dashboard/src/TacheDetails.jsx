@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./css/Tache.css";
 
 function formaterDate(date) {
   if (!date) return "Non renseignée";
@@ -6,12 +7,23 @@ function formaterDate(date) {
   return `${jour}/${mois}/${annee}`;
 }
 
-function TacheDetails({ tache, onRetour, onModifier }) {
+function TacheDetails({ tache, onRetour, onModifier, administrateurs = [] }) {
   const [modeEdition, setModeEdition] = useState(false);
   const [form, setForm] = useState({ ...tache });
 
+  const nomAdmin = (id) => {
+    const a = administrateurs.find((a) => String(a.id) === String(id));
+    return a ? `${a.prenom} ${a.nom}` : id;
+  };
+
   const handleSauvegarder = () => {
-    onModifier(form);
+    onModifier({
+      ...form,
+      responsable_id:
+        form.responsable_id ||
+        (form.responsables && form.responsables[0]) ||
+        null,
+    });
     setModeEdition(false);
   };
 
@@ -20,6 +32,16 @@ function TacheDetails({ tache, onRetour, onModifier }) {
     setForm(updated);
     onModifier(updated);
   };
+
+  const handleResponsableChange = (e) => {
+    setForm({ ...form, responsable_id: e.target.value });
+  };
+
+  const chargeAffichage = form.responsable_id
+    ? nomAdmin(form.responsable_id)
+    : form.responsables && form.responsables[0]
+      ? nomAdmin(form.responsables[0])
+      : "Non renseigné";
 
   return (
     <div className="dashboard">
@@ -33,70 +55,95 @@ function TacheDetails({ tache, onRetour, onModifier }) {
           <span
             className={`badge ${form.terminee ? "badge-terminee" : "badge-en-cours"}`}
           >
-            {form.terminee ? "✅ Terminée" : "🔄 En cours"}
+            {form.terminee ? "Terminée" : "En cours"}
           </span>
         </div>
 
         {modeEdition ? (
           <div className="formulaire-inline">
-            <label>Nom de la tâche</label>
-            <input
-              type="text"
-              value={form.nom}
-              onChange={(e) => setForm({ ...form, nom: e.target.value })}
-            />
-            <label>Responsables (séparés par des virgules)</label>
-            <input
-              type="text"
-              value={(form.responsables || []).join(", ")}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  responsables: e.target.value
-                    .split(",")
-                    .map((r) => r.trim())
-                    .filter((r) => r !== ""),
-                })
-              }
-            />
-            <label>Délai</label>
-            <input
-              type="date"
-              value={form.delai}
-              onChange={(e) => setForm({ ...form, delai: e.target.value })}
-            />
+            <div className="formulaire-inline-field">
+              <label>Nom de la tâche</label>
+              <input
+                type="text"
+                value={form.nom}
+                onChange={(e) => setForm({ ...form, nom: e.target.value })}
+              />
+            </div>
+            <div className="formulaire-inline-field">
+              <label>Délai</label>
+              <input
+                type="date"
+                value={form.delai}
+                onChange={(e) => setForm({ ...form, delai: e.target.value })}
+              />
+            </div>
+            <div className="formulaire-inline-field formulaire-inline-field--full">
+              <label>Chargé(e) de cette tâche</label>
+              <select
+                value={
+                  form.responsable_id ||
+                  (form.responsables && form.responsables[0]) ||
+                  ""
+                }
+                onChange={handleResponsableChange}
+              >
+                <option value="">— Choisir —</option>
+                {administrateurs.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.prenom} {a.nom}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="formulaire-inline-field formulaire-inline-field--full">
+              <label>Lien Drive</label>
+              <input
+                type="url"
+                value={form.lien_drive || ""}
+                onChange={(e) =>
+                  setForm({ ...form, lien_drive: e.target.value })
+                }
+                placeholder="https://drive.google.com/..."
+              />
+            </div>
             <button className="bouton-sauvegarder" onClick={handleSauvegarder}>
-              ✅ Sauvegarder
+              Sauvegarder
             </button>
           </div>
         ) : (
           <>
             <div className="detail-section">
-              <span className="detail-label">👥 Responsables</span>
-              <span>
-                {(form.responsables || []).join(", ") || "Non renseigné"}
-              </span>
+              <span className="detail-label">Chargé(e) de cette tâche</span>
+              <span>{chargeAffichage}</span>
             </div>
             <div className="detail-section">
-              <span className="detail-label">⏰ Délai</span>
+              <span className="detail-label">Délai</span>
               <span>{formaterDate(form.delai)}</span>
             </div>
+            <div className="detail-section">
+              <span className="detail-label">Documents Drive</span>
+              {form.lien_drive ? (
+                <a
+                  href={form.lien_drive}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="lien-drive"
+                >
+                  Accès au Drive
+                </a>
+              ) : (
+                <span className="detail-vide">Aucun lien renseigné</span>
+              )}
+            </div>
 
-            <button
-              className={`bouton-terminer ${form.terminee ? "bouton-terminer-annuler" : ""}`}
-              onClick={handleToggleTerminee}
-            >
-              {form.terminee
-                ? "↩️ Marquer comme non terminée"
-                : "✅ Marquer comme terminée"}
-            </button>
-
-            <button
-              className="bouton-modifier"
-              onClick={() => setModeEdition(true)}
-            >
-              ✏️ Modifier
-            </button>
+            <div className="event-actions">
+              <button
+                className="bouton-modifier"
+                onClick={() => setModeEdition(true)}
+              >
+                Modifier
+              </button>
+            </div>
           </>
         )}
       </div>

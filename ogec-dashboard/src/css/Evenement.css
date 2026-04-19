@@ -1,0 +1,255 @@
+.detail-container {
+  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.detail-container h1 {
+  margin-bottom: 30px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+}
+
+.detail-label {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.detail-vide {
+  color: #aaa;
+  font-style: italic;
+}
+
+.formulaire-inline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.formulaire-inline label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.formulaire-inline input,
+.formulaire-inline select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.formulaire-inline input:focus,
+.formulaire-inline select:focus {
+  outline: none;
+  border-color: #1e3a5f;
+  background: white;
+}
+
+.formulaire-inline-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.formulaire-inline-field--full {
+  grid-column: 1 / -1;
+}
+
+.bouton-sauvegarder {
+  grid-column: 1 / -1;
+  padding: 10px 24px;
+  background-color: #1e3a5f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  justify-self: start;
+}
+
+.bouton-sauvegarder:hover {
+  background-color: #16305a;
+}
+
+.bouton-modifier {
+  padding: 8px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.bouton-modifier:hover {
+  background-color: #e0e0e0;
+}
+
+.bouton-supprimer-evenement {
+  background-color: #c0392b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 8px;
+  border-radius: 4px;
+}
+
+.bouton-supprimer-evenement:hover {
+  background-color: #a93226;
+}
+
+.tache-nom {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.tache-meta {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.bouton-ajouter-tache {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.bouton-ajouter-tache:hover {
+  background: #e0e0e0;
+}
+
+.bouton-supprimer {
+  padding: 4px 10px;
+  background: #fdecea;
+  color: #c0392b;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.bouton-supprimer:hover {
+  background: #f5c6c2;
+}
+
+.event-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.event-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.event-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.event-taches {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.taches-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.taches-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.taches-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.taches-section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.tache-todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.tache-todo-item--terminee {
+  background: #f5f5f5;
+  opacity: 0.7;
+}
+
+.tache-todo-item--terminee .tache-nom {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.tache-todo-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.taches-section--realisees {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+}
