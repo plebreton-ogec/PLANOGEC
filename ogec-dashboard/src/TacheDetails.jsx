@@ -21,27 +21,31 @@ function TacheDetails({ tache, onRetour, onModifier, administrateurs = [] }) {
       ...form,
       responsable_id:
         form.responsable_id ||
-        (form.responsables && form.responsables[0]) ||
+        (Array.isArray(form.responsables) && form.responsables[0]) ||
+        (typeof form.responsables === "string" &&
+          JSON.parse(form.responsables)[0]) ||
         null,
     });
     setModeEdition(false);
-  };
-
-  const handleToggleTerminee = () => {
-    const updated = { ...form, terminee: !form.terminee };
-    setForm(updated);
-    onModifier(updated);
   };
 
   const handleResponsableChange = (e) => {
     setForm({ ...form, responsable_id: e.target.value });
   };
 
-  const chargeAffichage = form.responsable_id
-    ? nomAdmin(form.responsable_id)
-    : form.responsables && form.responsables[0]
-      ? nomAdmin(form.responsables[0])
-      : "Non renseigné";
+  const chargeAffichage = (() => {
+    if (form.responsable_id) return nomAdmin(form.responsable_id);
+    try {
+      const responsables = Array.isArray(form.responsables)
+        ? form.responsables
+        : JSON.parse(form.responsables || "[]");
+      const id = responsables[0];
+      if (!id || id === "[" || id === "") return "";
+      return nomAdmin(id);
+    } catch {
+      return "";
+    }
+  })();
 
   return (
     <div className="dashboard">
@@ -82,7 +86,9 @@ function TacheDetails({ tache, onRetour, onModifier, administrateurs = [] }) {
               <select
                 value={
                   form.responsable_id ||
-                  (form.responsables && form.responsables[0]) ||
+                  (Array.isArray(form.responsables) && form.responsables[0]) ||
+                  (typeof form.responsables === "string" &&
+                    JSON.parse(form.responsables)[0]) ||
                   ""
                 }
                 onChange={handleResponsableChange}
@@ -114,7 +120,11 @@ function TacheDetails({ tache, onRetour, onModifier, administrateurs = [] }) {
           <>
             <div className="detail-section">
               <span className="detail-label">Chargé(e) de cette tâche</span>
-              <span>{chargeAffichage}</span>
+              <span>
+                {chargeAffichage || (
+                  <span className="detail-vide">Non renseigné</span>
+                )}
+              </span>
             </div>
             <div className="detail-section">
               <span className="detail-label">Délai</span>

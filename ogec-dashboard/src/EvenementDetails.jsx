@@ -127,9 +127,14 @@ function EvenementDetails({
 
   const getNomResponsableTache = (tache) => {
     if (tache.responsable_id) return nomAdmin(tache.responsable_id);
-    if (Array.isArray(tache.responsables) && tache.responsables[0])
-      return nomAdmin(tache.responsables[0]);
-    return "Non renseigné";
+    const responsables = Array.isArray(tache.responsables)
+      ? tache.responsables
+      : typeof tache.responsables === "string"
+        ? JSON.parse(tache.responsables || "[]")
+        : [];
+    const id = responsables[0];
+    if (!id || id === "[" || id === "") return "";
+    return nomAdmin(id);
   };
 
   if (tacheActive !== null) {
@@ -344,8 +349,10 @@ function EvenementDetails({
                         >
                           <span className="tache-nom">{tache.nom}</span>
                           <span className="tache-meta">
-                            {formaterDate(tache.delai)} —{" "}
-                            {getNomResponsableTache(tache)}
+                            {formaterDate(tache.delai)}
+                            {getNomResponsableTache(tache) !== ""
+                              ? ` — Chargé : ${getNomResponsableTache(tache)}`
+                              : ""}
                           </span>
                         </div>
                         <button
@@ -386,8 +393,10 @@ function EvenementDetails({
                         >
                           <span className="tache-nom">{tache.nom}</span>
                           <span className="tache-meta">
-                            {formaterDate(tache.delai)} —{" "}
-                            {getNomResponsableTache(tache)}
+                            {formaterDate(tache.delai)}
+                            {getNomResponsableTache(tache) !== ""
+                              ? ` — Chargé : ${getNomResponsableTache(tache)}`
+                              : ""}
                           </span>
                         </div>
                         <button

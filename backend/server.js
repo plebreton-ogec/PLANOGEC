@@ -161,6 +161,41 @@ app.get("/administrateurs", (req, res) => {
   res.json(rows);
 });
 
+app.get("/administrateurs/:id/projets", (req, res) => {
+  const id = req.params.id;
+
+  // Événements dont l'admin est responsable
+  const evenementsRespo = db
+    .prepare("SELECT * FROM evenements WHERE responsable_id = ?")
+    .all(id);
+
+  // Événements dont l'admin est chargé d'une tâche
+  const toutesLesTaches = db
+    .prepare("SELECT * FROM taches WHERE responsables LIKE ?")
+    .all(`%"${id}"%`);
+
+  // Récupère les IDs d'événements uniques
+  const idsEvenements = [
+    ...new Set([
+      ...evenementsRespo.map((e) => e.id),
+      ...toutesLesTaches.map((t) => t.evenement_id),
+    ]),
+  ];
+
+  // Pour chaque événement, récupère ses infos et ses tâches liées à l'admin
+  const result = idsEvenements.map((evtId) => {
+    const evt = db.prepare("SELECT * FROM evenements WHERE id = ?").get(evtId);
+    const taches = db
+      .prepare(
+        "SELECT * FROM taches WHERE evenement_id = ? AND responsables LIKE ?",
+      )
+      .all(evtId, `%"${id}"%`);
+    return { ...evt, taches };
+  });
+
+  res.json(result);
+});
+
 app.post("/administrateurs", (req, res) => {
   const { nom, prenom, email, telephone, commission_id } = req.body;
   const result = db

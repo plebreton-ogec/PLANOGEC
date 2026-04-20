@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
+import EvenementDetails from "./EvenementDetails";
+import TacheDetails from "./TacheDetails";
 import "./css/AdminPage.css";
 
 function AdminPage({ onRetour }) {
   const [administrateurs, setAdministrateurs] = useState([]);
   const [commissions, setCommissions] = useState([]);
-  const [edition, setEdition] = useState(null); // null | "nouveau" | id
+  const [edition, setEdition] = useState(null);
+  const [adminProjets, setAdminProjets] = useState(null);
+  const [evenementActif, setEvenementActif] = useState(null);
+  const [tacheActive, setTacheActive] = useState(null);
   const [form, setForm] = useState({
     nom: "",
     prenom: "",
@@ -74,6 +79,142 @@ function AdminPage({ onRetour }) {
       method: "DELETE",
     }).then(chargerDonnees);
   };
+
+  const voirProjets = (admin) => {
+    fetch(`http://localhost:3001/administrateurs/${admin.id}/projets`)
+      .then((r) => r.json())
+      .then((data) => setAdminProjets({ admin, projets: data }));
+  };
+
+  if (tacheActive !== null) {
+    return (
+      <TacheDetails
+        tache={tacheActive}
+        onRetour={() => setTacheActive(null)}
+        administrateurs={administrateurs}
+        onModifier={(tacheModifiee) => {
+          fetch(`http://localhost:3001/taches/${tacheModifiee.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...tacheModifiee,
+              responsable_id:
+                tacheModifiee.responsable_id ||
+                (tacheModifiee.responsables && tacheModifiee.responsables[0]) ||
+                null,
+              nom: tacheModifiee.nom,
+              delai: tacheModifiee.delai,
+              terminee: tacheModifiee.terminee,
+              lien_drive: tacheModifiee.lien_drive,
+            }),
+          }).then(() => {
+            setTacheActive(null);
+            voirProjets(adminProjets.admin);
+          });
+        }}
+      />
+    );
+  }
+
+  if (evenementActif !== null) {
+    return (
+      <EvenementDetails
+        evenement={evenementActif}
+        onRetour={() => setEvenementActif(null)}
+        administrateurs={administrateurs}
+        onModifier={(evenementModifie) => {
+          fetch(`http://localhost:3001/evenements/${evenementModifie.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...evenementModifie,
+              responsable_id: evenementModifie.responsable_id
+                ? Number(evenementModifie.responsable_id)
+                : null,
+            }),
+          }).then(() => {
+            setEvenementActif(null);
+          });
+        }}
+      />
+    );
+  }
+
+  if (adminProjets !== null) {
+    return (
+      <div className="adminpage">
+        <div className="adminpage-header">
+          <button
+            className="adminpage-retour"
+            onClick={() => setAdminProjets(null)}
+          >
+            ← Retour
+          </button>
+          <h1 className="adminpage-titre">
+            Projets de {adminProjets.admin.prenom} {adminProjets.admin.nom}
+          </h1>
+        </div>
+        <div className="adminpage-projets">
+          {adminProjets.projets.length === 0 ? (
+            <span className="adminpage-vide-cell">Aucun projet associé.</span>
+          ) : (
+            adminProjets.projets.map((evt) => (
+              <div
+                key={evt.id}
+                className="adminpage-projet-item"
+                onClick={() => setEvenementActif(evt)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="adminpage-projet-header">
+                  <span className="adminpage-projet-nom">{evt.nom}</span>
+                  <span className="adminpage-projet-date">
+                    {evt.date
+                      ? evt.date.split("-").reverse().join("/")
+                      : "Date non renseignée"}
+                  </span>
+                </div>
+                {evt.taches && evt.taches.length > 0 && (
+                  <div className="adminpage-projet-taches">
+                    {evt.taches.map((t) => (
+                      <div
+                        key={t.id}
+                        className="adminpage-projet-tache"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const responsables = (() => {
+                            if (Array.isArray(t.responsables))
+                              return t.responsables;
+                            try {
+                              return JSON.parse(t.responsables || "[]");
+                            } catch {
+                              return [];
+                            }
+                          })();
+                          setTacheActive({ ...t, responsables });
+                        }}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <span
+                          className={`adminpage-projet-tache-nom ${t.terminee ? "terminee" : ""}`}
+                        >
+                          {t.terminee ? "✓" : "○"} {t.nom}
+                        </span>
+                        <span className="adminpage-projet-tache-delai">
+                          {t.delai
+                            ? t.delai.split("-").reverse().join("/")
+                            : ""}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="adminpage">
@@ -195,6 +336,7 @@ function AdminPage({ onRetour }) {
                   <th>Email</th>
                   <th>Téléphone</th>
                   <th>Commission</th>
+                  <th>Responsabilités</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -218,6 +360,14 @@ function AdminPage({ onRetour }) {
                       {a.commission_nom || (
                         <span className="adminpage-vide-cell">Aucune</span>
                       )}
+                    </td>
+                    <td>
+                      <button
+                        className="adminpage-btn-projets"
+                        onClick={() => voirProjets(a)}
+                      >
+                        Voir projets ›
+                      </button>
                     </td>
                     <td className="adminpage-td-actions">
                       <button
