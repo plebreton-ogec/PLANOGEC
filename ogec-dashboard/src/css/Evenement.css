@@ -110,17 +110,18 @@
 }
 
 .bouton-supprimer-evenement {
-  background-color: #c0392b;
-  color: white;
+  padding: 8px 20px;
+  color: #c0392b;
   border: none;
-  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 8px;
-  border-radius: 4px;
+  margin-right: 10px;
 }
 
 .bouton-supprimer-evenement:hover {
-  background-color: #a93226;
+  background-color: #e0e0e0;
 }
 
 .tache-nom {
@@ -151,7 +152,6 @@
 .bouton-supprimer {
   padding: 4px 10px;
   background: #fdecea;
-  color: #c0392b;
   border: none;
   border-radius: 6px;
   cursor: pointer;

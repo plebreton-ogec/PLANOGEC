@@ -4,16 +4,21 @@ import "./css/CommVieCollective.css";
 
 const COMMISSION_ID = 1;
 
+function formaterDate(date) {
+  if (!date) return "";
+  const [annee, mois, jour] = date.split("-");
+  return `${jour}/${mois}/${annee}`;
+}
+
 function CommissionVieCollective({ onRetour }) {
   const [evenements, setEvenements] = useState([]);
   const [formulaireVisible, setFormulaireVisible] = useState(false);
   const [evenementActif, setEvenementActif] = useState(null);
   const [administrateurs, setAdministrateurs] = useState([]);
   const [pageArchives, setPageArchives] = useState(false);
-
+  const [tachesUrgentesParEvent, setTachesUrgentesParEvent] = useState({});
   const [modeCreation, setModeCreation] = useState("manuel");
   const [modeleSelectionne, setModeleSelectionne] = useState("");
-
   const [nouvelEvenement, setNouvelEvenement] = useState({
     nom: "",
     date: "",
@@ -25,12 +30,36 @@ function CommissionVieCollective({ onRetour }) {
   const chargerEvenements = () => {
     fetch(`http://localhost:3001/commissions/${COMMISSION_ID}/evenements`)
       .then((res) => res.json())
-      .then((data) => setEvenements(data));
+      .then((data) => {
+        setEvenements(data);
+        const aujourd_hui = new Date();
+        data.forEach((evt) => {
+          fetch(`http://localhost:3001/evenements/${evt.id}/taches`)
+            .then((res) => res.json())
+            .then((taches) => {
+              const nb_urgentes = taches.filter((t) => {
+                if (!t.delai || t.terminee) return false;
+                const diff =
+                  (new Date(t.delai) - aujourd_hui) / (1000 * 60 * 60 * 24);
+                return diff <= 14 && diff >= 0;
+              }).length;
+              const nb_total = taches.length;
+              const nb_terminees = taches.filter((t) => t.terminee).length;
+              setTachesUrgentesParEvent((prev) => ({
+                ...prev,
+                [evt.id]: {
+                  urgentes: nb_urgentes,
+                  total: nb_total,
+                  terminees: nb_terminees,
+                },
+              }));
+            });
+        });
+      });
   };
 
   useEffect(() => {
     chargerEvenements();
-
     fetch("http://localhost:3001/administrateurs")
       .then((res) => res.json())
       .then((data) => setAdministrateurs(data));
@@ -42,7 +71,6 @@ function CommissionVieCollective({ onRetour }) {
 
   const handleAjouter = () => {
     if (nouvelEvenement.nom.trim() === "") return;
-
     fetch("http://localhost:3001/evenements", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -85,12 +113,41 @@ function CommissionVieCollective({ onRetour }) {
           : null,
       }),
     }).then(() => {
-      return fetch(
-        `http://localhost:3001/commissions/${COMMISSION_ID}/evenements`,
-      )
+      fetch(`http://localhost:3001/commissions/${COMMISSION_ID}/evenements`)
         .then((res) => res.json())
         .then((data) => setEvenements(data));
     });
+  };
+
+  const CarteEvenement = ({ evenement }) => {
+    const stats = tachesUrgentesParEvent[evenement.id];
+    const progression =
+      stats?.total > 0
+        ? Math.round((stats.terminees / stats.total) * 100)
+        : null;
+
+    return (
+      <div className="carte" onClick={() => setEvenementActif(evenement.id)}>
+        {stats?.urgentes > 0 && (
+          <span className="badge-urgent">{stats.urgentes}</span>
+        )}
+        <div className="carte-titre">{evenement.nom}</div>
+        <div className="carte-date">{formaterDate(evenement.date)}</div>
+        {progression !== null && (
+          <div className="carte-progression">
+            <div className="carte-progression-bar">
+              <div
+                className="carte-progression-fill"
+                style={{ width: `${progression}%` }}
+              />
+            </div>
+            <span className="carte-progression-label">
+              {stats.terminees}/{stats.total} tâches
+            </span>
+          </div>
+        )}
+      </div>
+    );
   };
 
   if (evenementActif !== null) {
@@ -116,7 +173,9 @@ function CommissionVieCollective({ onRetour }) {
         >
           ←
         </button>
-        <h2>Archives</h2>
+        <h2 style={{ marginBottom: 16, color: "var(--ogec-text, #1a2d42)" }}>
+          Archives
+        </h2>
         <div className="archives-liste">
           {[...evenementsArchives]
             .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -127,11 +186,15 @@ function CommissionVieCollective({ onRetour }) {
                 onClick={() => setEvenementActif(evenement.id)}
               >
                 <span className="archive-nom">{evenement.nom}</span>
-                <span className="archive-date">{evenement.date}</span>
+                <span className="archive-date">
+                  {formaterDate(evenement.date)}
+                </span>
               </div>
             ))}
           {evenementsArchives.length === 0 && (
-            <span>Aucun événement archivé.</span>
+            <span style={{ color: "var(--ogec-muted, #5a6a7a)" }}>
+              Aucun événement archivé.
+            </span>
           )}
         </div>
       </div>
@@ -148,15 +211,7 @@ function CommissionVieCollective({ onRetour }) {
         {[...evenementsActifs]
           .sort((a, b) => new Date(a.date) - new Date(b.date))
           .map((evenement) => (
-            <div
-              key={evenement.id}
-              className="carte"
-              onClick={() => setEvenementActif(evenement.id)}
-            >
-              <div className="carte-titre">{evenement.nom}</div>
-              <div className="carte-date">{evenement.date}</div>
-              <div className="carte-respo">{evenement.responsable}</div>
-            </div>
+            <CarteEvenement key={evenement.id} evenement={evenement} />
           ))}
 
         <div
@@ -180,17 +235,15 @@ function CommissionVieCollective({ onRetour }) {
           <div className="formulaire">
             <h2>Nouvel événement</h2>
 
-            {/* Mode création */}
             <label>Mode de création</label>
             <select
               value={modeCreation}
               onChange={(e) => setModeCreation(e.target.value)}
             >
               <option value="manuel">Nouvel événement</option>
-              <option value="modele">À partir d’un événement existant</option>
+              <option value="modele">À partir d'un événement existant</option>
             </select>
 
-            {/* Choix modèle */}
             {modeCreation === "modele" && (
               <>
                 <label>Choisir un événement modèle</label>
@@ -199,11 +252,9 @@ function CommissionVieCollective({ onRetour }) {
                   onChange={(e) => {
                     const id = e.target.value;
                     setModeleSelectionne(id);
-
                     const modele = evenements.find(
                       (evenement) => String(evenement.id) === id,
                     );
-
                     if (modele) {
                       setNouvelEvenement({
                         nom: modele.nom || "",
@@ -222,7 +273,7 @@ function CommissionVieCollective({ onRetour }) {
                   <option value="">— Choisir —</option>
                   {evenements.map((evenement) => (
                     <option key={evenement.id} value={evenement.id}>
-                      {evenement.nom}{" "}
+                      {evenement.nom}
                       {evenement.date
                         ? ` - ${evenement.date.split("-")[0]}`
                         : ""}
@@ -237,10 +288,7 @@ function CommissionVieCollective({ onRetour }) {
               type="text"
               value={nouvelEvenement.nom}
               onChange={(e) =>
-                setNouvelEvenement({
-                  ...nouvelEvenement,
-                  nom: e.target.value,
-                })
+                setNouvelEvenement({ ...nouvelEvenement, nom: e.target.value })
               }
             />
 
@@ -249,10 +297,7 @@ function CommissionVieCollective({ onRetour }) {
               type="date"
               value={nouvelEvenement.date}
               onChange={(e) =>
-                setNouvelEvenement({
-                  ...nouvelEvenement,
-                  date: e.target.value,
-                })
+                setNouvelEvenement({ ...nouvelEvenement, date: e.target.value })
               }
             />
 
@@ -279,14 +324,11 @@ function CommissionVieCollective({ onRetour }) {
               type="text"
               value={nouvelEvenement.lieu}
               onChange={(e) =>
-                setNouvelEvenement({
-                  ...nouvelEvenement,
-                  lieu: e.target.value,
-                })
+                setNouvelEvenement({ ...nouvelEvenement, lieu: e.target.value })
               }
             />
 
-            <label> Public </label>
+            <label>Public</label>
             <input
               type="text"
               value={nouvelEvenement.public}

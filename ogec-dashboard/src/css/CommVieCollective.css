@@ -1,98 +1,175 @@
+/* ── Grille d'événements ── */
 .grille {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  padding: 4px;
 }
 
 .carte {
-  background: #d9d9d9;
-  border-radius: 20px;
-  padding: 20px;
-  min-height: 120px;
+  background: var(--ogec-card, #ffffff);
+  border: 0.5px solid var(--ogec-border, rgba(30, 58, 95, 0.12));
+  border-radius: 14px;
+  padding: 28px 20px 20px;
+  min-height: 180px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 6px;
+  text-align: center;
+  gap: 8px;
   text-align: center;
   cursor: pointer;
-  margin: 8px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .carte:hover {
-  background-color: #c8c8c8;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(30, 58, 95, 0.1);
 }
 
+/* Barre bleue en haut de chaque carte événement */
+.carte::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--ogec-blue, #1a6fc4);
+}
+
+.carte-ajout::before {
+  display: none;
+}
+
+.carte-nom {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ogec-text, #1a2d42);
+  line-height: 1.4;
+}
+
+.carte-date {
+  font-size: 12px;
+  color: var(--ogec-muted, #5a6a7a);
+}
+
+/* Carte + ajout */
 .carte-ajout {
+  border: 1.5px dashed var(--ogec-border, rgba(30, 58, 95, 0.2));
+  background: transparent;
+  color: var(--ogec-muted, #5a6a7a);
   font-size: 2rem;
-  color: #888;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
+.carte-ajout:hover {
+  background: var(--ogec-card, #ffffff);
+  border-style: solid;
+  color: var(--ogec-blue, #1a6fc4);
+}
+
+.carte-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 4px;
+}
+
+/* ── Bouton retour ── */
+.bouton-retour {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  border: 0.5px solid var(--ogec-border, rgba(30, 58, 95, 0.12));
+  border-radius: 8px;
+  background: var(--ogec-card, #ffffff);
+  color: var(--ogec-text, #1a2d42);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.bouton-retour:hover {
+  background: #e8edf3;
+}
+
+/* ── Overlay / formulaire ── */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 200;
 }
 
 .formulaire {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
+  background: var(--ogec-card, #ffffff);
+  padding: 32px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 400px;
-  border: 1px solid #e0e0e0;
+  width: 420px;
+  border: 0.5px solid var(--ogec-border, rgba(30, 58, 95, 0.12));
 }
 
 .formulaire h2 {
-  margin: 0 0 8px 0;
-  font-size: 1.1rem;
+  margin: 0 0 4px;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: #1e3a5f;
+  color: var(--ogec-navy, #1e3a5f);
 }
 
 .formulaire label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #888;
-  margin-bottom: 2px;
+  letter-spacing: 0.07em;
+  color: var(--ogec-muted, #5a6a7a);
+  margin-bottom: 4px;
 }
 
 .formulaire input,
 .formulaire select {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  padding: 9px 12px;
+  border: 0.5px solid var(--ogec-border, rgba(30, 58, 95, 0.2));
   border-radius: 8px;
-  font-size: 0.95rem;
-  background: #fafafa;
+  font-size: 0.9rem;
+  background: var(--ogec-bg, #f4f6f9);
   box-sizing: border-box;
+  color: var(--ogec-text, #1a2d42);
+  transition: border-color 0.15s;
 }
 
 .formulaire input:focus,
 .formulaire select:focus {
   outline: none;
-  border-color: #1e3a5f;
+  border-color: var(--ogec-blue, #1a6fc4);
   background: white;
 }
 
 .formulaire-boutons {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   margin-top: 4px;
 }
 
@@ -102,38 +179,42 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
+  transition: background 0.15s;
 }
 
 .formulaire-boutons button:first-child {
-  background-color: #1e3a5f;
+  background: var(--ogec-navy, #1e3a5f);
   color: white;
 }
 
 .formulaire-boutons button:first-child:hover {
-  background-color: #16305a;
+  background: #16305a;
 }
 
 .formulaire-boutons button:last-child {
-  background-color: #f0f0f0;
-  color: #333;
+  background: var(--ogec-bg, #f4f6f9);
+  color: var(--ogec-text, #1a2d42);
+  border: 0.5px solid var(--ogec-border, rgba(30, 58, 95, 0.12));
 }
 
 .formulaire-boutons button:last-child:hover {
-  background-color: #e0e0e0;
+  background: #e8edf3;
 }
 
+/* ── Archives ── */
 .lien-archives {
   margin-top: 24px;
   cursor: pointer;
-  color: #555;
-  font-size: 0.95rem;
+  color: var(--ogec-muted, #5a6a7a);
+  font-size: 0.9rem;
   text-decoration: underline;
+  display: inline-block;
 }
 
 .lien-archives:hover {
-  color: #000;
+  color: var(--ogec-navy, #1e3a5f);
 }
 
 .archives-liste {
@@ -146,27 +227,33 @@
 .archive-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 12px 16px;
-  background: #f5f5f5;
-  border-radius: 6px;
+  background: var(--ogec-card, #ffffff);
+  border: 0.5px solid var(--ogec-border, rgba(30, 58, 95, 0.12));
+  border-radius: 10px;
   cursor: pointer;
+  transition: background 0.15s;
 }
 
 .archive-item:hover {
-  background: #ebebeb;
+  background: #e8edf3;
 }
 
 .archive-nom {
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ogec-text, #1a2d42);
 }
 
 .archive-date {
-  color: #888;
-  font-size: 0.9rem;
+  color: var(--ogec-muted, #5a6a7a);
+  font-size: 12px;
 }
 
+/* ── Liens Drive ── */
 .lien-drive {
-  color: #1d6f42;
+  color: var(--ogec-green, #2ea84a);
   font-weight: 600;
   text-decoration: none;
   font-size: 0.875rem;
@@ -177,7 +264,7 @@
 }
 
 .lien-drive-mini {
-  color: #1d6f42;
+  color: var(--ogec-green, #2ea84a);
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
@@ -185,4 +272,88 @@
 
 .lien-drive-mini:hover {
   text-decoration: underline;
+}
+
+.badge-urgent {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e03030;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.carte-titre {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ogec-text, #1a2d42);
+  line-height: 1.4;
+  text-align: center;
+  width: 100%;
+}
+
+.carte-date {
+  font-size: 12px;
+  color: var(--ogec-muted, #5a6a7a);
+  text-align: center;
+  width: 100%;
+}
+
+.carte-progression {
+  width: 100%;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.carte-progression-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--ogec-border, rgba(30, 58, 95, 0.12));
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.carte-progression-fill {
+  height: 100%;
+  background: var(--ogec-blue, #1a6fc4);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.carte-progression-label {
+  font-size: 10px;
+  color: var(--ogec-muted, #5a6a7a);
+  text-align: right;
+}
+
+.archives-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  width: 100%;
+  max-width: 700px;
+}
+
+.archive-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  min-height: 52px;
+  background: var(--ogec-card, #ffffff);
+  border: 0.5px solid var(--ogec-border, rgba(30, 58, 95, 0.12));
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
 }

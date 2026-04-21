@@ -1,81 +1,170 @@
+/* ── Variables ── */
+:root {
+  --ogec-navy:   #1e3a5f;
+  --ogec-blue:   #1a6fc4;
+  --ogec-green:  #2ea84a;
+  --ogec-red:    #e03030;
+  --ogec-yellow: #f5a800;
+  --ogec-bg:     #f4f6f9;
+  --ogec-card:   #ffffff;
+  --ogec-text:   #1a2d42;
+  --ogec-muted:  #5a6a7a;
+  --ogec-border: rgba(30, 58, 95, 0.12);
+}
+
+/* ── Base ── */
 .dashboard {
-  font-family: sans-serif;
-  padding: 20px;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--ogec-bg);
+  min-height: 100vh;
+  padding: 0;
 }
 
-.bouton-retour {
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  background-color: #e0e0e0;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.bouton-retour:hover {
-  background-color: #c8c8c8;
-}
-
+/* ── Navbar ── */
 .navbar {
   position: sticky;
-  top: -8px;
+  top: 0;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
   height: 56px;
-  background-color: #1e3a5f;
+  background: var(--ogec-navy);
   color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(
+    90deg,
+    var(--ogec-blue)   0%,
+    var(--ogec-green)  33%,
+    var(--ogec-yellow) 66%,
+    var(--ogec-red)    100%
+  ) 1;
 }
 
-.navbar-left,
-.navbar-right {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
+.navbar-left  { flex: 1; display: flex; justify-content: flex-start; }
+.navbar-right { flex: 1; display: flex; justify-content: flex-end; }
+.navbar-center { flex: 2; display: flex; justify-content: center; }
 
 .navbar-logo {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.navbar-center {
-  flex: 2;
-  display: flex;
-  justify-content: center;
-}
+.navbar-dots { display: flex; gap: 4px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; display: block; }
+.dot--blue   { background: var(--ogec-blue); }
+.dot--green  { background: var(--ogec-green); }
+.dot--yellow { background: var(--ogec-yellow); }
+.dot--red    { background: var(--ogec-red); }
 
 .navbar-breadcrumb {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 4px;
+  color: rgba(255, 255, 255, 0.75);
 }
+.navbar-breadcrumb-link { opacity: 0.7; cursor: pointer; transition: opacity 0.2s; }
+.navbar-breadcrumb-link:hover { opacity: 1; text-decoration: underline; }
+.navbar-separator { opacity: 0.5; }
+.navbar-current { font-weight: 600; color: white; }
 
-.navbar-breadcrumb-link {
-  opacity: 0.7;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.navbar-breadcrumb-link:hover {
-  opacity: 1;
-  text-decoration: underline;
-}
-
-.navbar-separator {
-  opacity: 0.5;
-}
-
-.navbar-current {
-  font-weight: 600;
-}
-
+/* ── Page ── */
 .page-content {
-  padding: 24px;
+  padding: 28px 24px;
 }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ogec-muted);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ── Grille commissions ── */
+.grille-commissions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Carte commission ── */
+.carte {
+  background: var(--ogec-card);
+  border: 0.5px solid var(--ogec-border);
+  border-radius: 14px;
+  padding: 36px 24px 32px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  min-height: 160px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.carte:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(30, 58, 95, 0.1);
+}
+.carte::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.carte--blue::before   { background: var(--ogec-blue); }
+.carte--green::before  { background: var(--ogec-green); }
+.carte--yellow::before { background: var(--ogec-yellow); }
+.carte--red::before    { background: var(--ogec-red); }
+
+.carte-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.carte-icon--blue   { background: #dceeff; }
+.carte-icon--green  { background: #d6f2dc; }
+.carte-icon--yellow { background: #fff3d0; }
+.carte-icon--red    { background: #fde2e2; }
+
+.carte-nom {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ogec-text);
+  line-height: 1.4;
+}
+
+/* ── Logo OGEC (8e carte) ── */
+.carte-logo { cursor: default; }
+.carte-logo::before { display: none; }
+.logo-ogec { width: 80%; max-width: 120px; opacity: 0.85; pointer-events: none; }
+
+/* ── Bouton retour ── */
+.bouton-retour {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  border: 0.5px solid var(--ogec-border);
+  border-radius: 8px;
+  background: var(--ogec-card);
+  color: var(--ogec-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.bouton-retour:hover { background: #e8edf3; }

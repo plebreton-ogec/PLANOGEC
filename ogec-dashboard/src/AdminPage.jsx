@@ -222,7 +222,7 @@ function AdminPage({ onRetour }) {
         <button className="adminpage-retour" onClick={onRetour}>
           ← Retour
         </button>
-        <h1 className="adminpage-titre">🛡️ Administrateurs de l'OGEC</h1>
+        <h1 className="adminpage-titre">Administrateurs de l'OGEC</h1>
         {edition === null && (
           <button className="adminpage-btn-ajouter" onClick={ouvrirNouveauForm}>
             + Ajouter

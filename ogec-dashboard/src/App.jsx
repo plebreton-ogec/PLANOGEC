@@ -4,18 +4,33 @@ import AdminPage from "./AdminPage";
 import Parametres from "./Parametres";
 import "./css/App.css";
 
+const commissions = [
+  {
+    nom: "Commission Vie Collective",
+    id: "vie-collective",
+    icon: "🤝",
+    accent: "blue",
+  },
+  { nom: "Commission du Personnel", id: null, icon: "👥", accent: "green" },
+  { nom: "Commission Finance", id: null, icon: "💰", accent: "yellow" },
+  {
+    nom: "Commission Sécurité, Hygiène et Réglementation",
+    id: null,
+    icon: "🛡️",
+    accent: "red",
+  },
+  {
+    nom: "Commission Restauration et Périscolaire",
+    id: null,
+    icon: "🍽️",
+    accent: "blue",
+  },
+  { nom: "Commission Vie Scolaire", id: null, icon: "📚", accent: "green" },
+  { nom: "Commission Vie Extérieure", id: null, icon: "🌍", accent: "yellow" },
+];
+
 function App() {
   const [pageActive, setPageActive] = useState("accueil");
-
-  const commissions = [
-    { nom: "Commission Vie Collective", id: "vie-collective" },
-    { nom: "Commission du Personnel", id: null },
-    { nom: "Commission Finance", id: null },
-    { nom: "Commission Sécurité, Hygiène et Réglementation", id: null },
-    { nom: "Commission Restauration et Périscolaire", id: null },
-    { nom: "Commission Vie Scolaire", id: null },
-    { nom: "Commission Vie Extérieure", id: null },
-  ];
 
   const getTitrePage = () => {
     if (pageActive === "accueil") return "Accueil";
@@ -26,38 +41,46 @@ function App() {
   };
 
   const renderPage = () => {
-    if (pageActive === "vie-collective") {
+    if (pageActive === "vie-collective")
       return (
         <CommissionVieCollective onRetour={() => setPageActive("accueil")} />
       );
-    }
 
-    if (pageActive === "administrateurs") {
+    if (pageActive === "administrateurs")
       return <AdminPage onRetour={() => setPageActive("accueil")} />;
-    }
 
-    if (pageActive === "profil") {
+    if (pageActive === "profil")
       return (
         <div style={{ padding: 24 }}>
           <h2>Mon Profil</h2>
           <p>Fonctionnalité à venir.</p>
         </div>
       );
-    }
 
     return (
-      <div className="grille">
-        {commissions.map((commission, index) => (
-          <div
-            key={index}
-            className="carte"
-            onClick={() => commission.id && setPageActive(commission.id)}
-            style={{ cursor: commission.id ? "pointer" : "default" }}
-          >
-            {commission.nom}
+      <>
+        <p className="section-label">Commissions</p>
+        <div className="grille-commissions">
+          {commissions.map((commission, index) => (
+            <div
+              key={index}
+              className={`carte carte--${commission.accent}`}
+              onClick={() => commission.id && setPageActive(commission.id)}
+              style={{ cursor: commission.id ? "pointer" : "default" }}
+            >
+              <div className={`carte-icon carte-icon--${commission.accent}`}>
+                {commission.icon}
+              </div>
+              <div className="carte-nom">{commission.nom}</div>
+            </div>
+          ))}
+
+          {/* 8e carte : logo OGEC */}
+          <div className="carte carte-logo">
+            <img src="/logo-ogec.png" alt="Logo OGEC" className="logo-ogec" />
           </div>
-        ))}
-      </div>
+        </div>
+      </>
     );
   };
 
@@ -70,7 +93,13 @@ function App() {
             onClick={() => setPageActive("accueil")}
             style={{ cursor: "pointer" }}
           >
-            🏫 PLANOGEC
+            <span className="navbar-dots">
+              <span className="dot dot--blue" />
+              <span className="dot dot--green" />
+              <span className="dot dot--yellow" />
+              <span className="dot dot--red" />
+            </span>
+            PLANOGEC
           </span>
         </div>
 
