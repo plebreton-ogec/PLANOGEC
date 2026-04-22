@@ -17,8 +17,13 @@ cd ogec-dashboard
 call npm install
 cd ..
 echo.
+echo Deplacement des scripts de lancement...
+copy "%~dp0lancer.bat" "%~dp0ProjetP2I_PLANOGEC\lancer.bat" >nul
+copy "%~dp0maj.bat" "%~dp0ProjetP2I_PLANOGEC\maj.bat" >nul
+echo.
 echo ========================================
 echo    Installation terminee !
-echo    Lancez lancer.bat pour demarrer.
+echo    Ouvrez le dossier ProjetP2I_PLANOGEC
+echo    et lancez lancer.bat pour demarrer.
 echo ========================================
 pause
