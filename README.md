@@ -54,4 +54,4 @@ Ce script va :
 
 ## Contact
 
-Pour toute question ou problème, contactez le développeur du projet.
+Pour toute question ou problème, contactez le développeur du projet : lebreton-gwenaelle@orange.fr
