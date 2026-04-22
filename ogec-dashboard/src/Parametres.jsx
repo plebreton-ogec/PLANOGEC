@@ -36,14 +36,14 @@ function Parametres({ onNavigate }) {
             className="parametres-dropdown-item"
             onClick={() => handleNav("profil")}
           >
-            👤 Mon Profil
+            Mon Profil
           </button>
           <div className="parametres-dropdown-separator" />
           <button
             className="parametres-dropdown-item"
             onClick={() => handleNav("administrateurs")}
           >
-            🛡️ Administrateurs de l'OGEC
+            Administrateurs de l'OGEC
           </button>
         </div>
       )}
