@@ -31,7 +31,7 @@ Ce script va :
 
 ### 2. Lancer l'application
 
-Double-cliquez sur `lancer.bat`.
+Double-cliquez sur `lancer.bat` dans le dossier créé dans les Téléchargements de votre appareil.
 
 Ce script va :
 - Démarrer le serveur backend (gestion de la base de données)
